@@ -19,7 +19,10 @@
         <br>
         Status: {{ $fornecedores[0]['status'] }}
         <br>
-    @endisset
+        CNPJ:{{ $fornecedores[0]['cnpj'] ?? '' }}
+        {{-- Variável testada não estiver definida
+            ou variável testada possuir o valor null --}}
+        @endisset
 
 </body>
 
