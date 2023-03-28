@@ -1,32 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('site.layouts.basico')
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Principal</title>
-</head>
+@section('titulo', 'Home')
 
-<body>
-    <h3>Principal (view)</h3>
-    <ul>
-        <li>
-            <a href="{{ route('site.index') }}">
-                Principal
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('site.sobrenos') }}">
-                Sobre Nós
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('site.contato') }}">
-                Contato
-            </a>
-        </li>
-    </ul>
-</body>
+@section('conteudo')
+    <div class="conteudo-destaque">
 
-</html>
+        <div class="esquerda">
+            <div class="informacoes">
+                <h1>Sistema Super Gestão</h1>
+                <p>Software para gestão empresarial ideal para sua empresa.<p>
+                <div class="chamada">
+                    <img src="{{ asset('img/check.png') }}">
+                    <span class="texto-branco">Gestão completa e descomplicada</span>
+                </div>
+                <div class="chamada">
+                    <img src="{{ asset('img/check.png') }}">
+                    <span class="texto-branco">Sua empresa na nuvem</span>
+                </div>
+            </div>
+
+            <div class="video">
+                <img src="{{ asset('img/player_video.jpg') }}">
+            </div>
+        </div>
+
+        <div class="direita">
+            <div class="contato">
+                <h1>Contato</h1>
+                <p>Caso tenha qualquer dúvida por favor entre em contato com nossa equipe pelo formulário abaixo.<p>
+                @component('site.layouts._components.form_contato', ['classe' => 'borda-branca'])
+                @endcomponent
+            </div>
+        </div>
+    </div>
+@endsection

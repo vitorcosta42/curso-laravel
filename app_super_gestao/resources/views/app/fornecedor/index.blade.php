@@ -1,29 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
+<h3>Fornecedor</h3>
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fornecedor</title>
-</head>
+@php
+    /*
+    if(empty($variavel)) {} //retornar true se a variável estiver vazia
+    - ''
+    - 0
+    - 0.0
+    - '0'
+    - null
+    - false
+    - array()
+    - $var
+    */
+@endphp
 
-<body>
-    <h3>Fornecedor</h3>
-    @php
-        
-    @endphp
+@isset($fornecedores)
 
-    @isset($fornecedores)
-        Fornecedor: {{ $fornecedores[0]['nome'] }}
+    @forelse($fornecedores as $indice => $fornecedor)
+        Iteração atual: {{ $loop->iteration }}
         <br>
-        Status: {{ $fornecedores[0]['status'] }}
+        Fornecedor: {{ $fornecedor['nome'] }}
         <br>
-        CNPJ:{{ $fornecedores[0]['cnpj'] ?? '' }}
-        {{-- Variável testada não estiver definida
-            ou variável testada possuir o valor null --}}
-        @endisset
+        Status: {{ $fornecedor['status'] }}
+        <br>
+        CNPJ: {{ $fornecedor['cnpj'] ?? '' }}
+        <br>
+        Telefone: ({{ $fornecedor['ddd'] ?? '' }}) {{ $fornecedor['telefone'] ?? '' }}
+        <br>
+        @if($loop->first)
+            Primeira iteração no loop
 
-</body>
+            <br>
+            Total de registros: {{ $loop->count }}
+        @endif
 
-</html>
+        @if($loop->last)
+            Última iteração no loop
+        @endif
+        <hr>
+    @empty
+        Não existem fornecedores cadastrados!!!
+    @endforelse
+@endisset
+
