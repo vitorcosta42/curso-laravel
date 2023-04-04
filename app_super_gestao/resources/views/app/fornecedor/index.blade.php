@@ -1,45 +1,36 @@
-<h3>Fornecedor</h3>
+@extends('app.layouts.basico')
+@section('titulo', 'Fornecedor')
 
-@php
-    /*
-    if(empty($variavel)) {} //retornar true se a variável estiver vazia
-    - ''
-    - 0
-    - 0.0
-    - '0'
-    - null
-    - false
-    - array()
-    - $var
-    */
-@endphp
+@section('conteudo')
 
-@isset($fornecedores)
+    <div class="conteudo-pagina">
+        <div class="titulo-pagina-2">
+            <p>
+                Fornecedor
+            </p>
+        </div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a href="{{route('app.fornecedor.adicionar')}}">Novo</a>
+                    <a href="{{route('app.fornecedor')}}">Consulta</a>
+                </li>
+            </ul>
+        </div>
+        <div class="informacao-pagina">
+            <div style="width: 30%; margin-left: auto; margin-right: auto;">
+                <form method="post" action="{{ route('app.fornecedor.listar') }}">
+                    @csrf
+                    <input type="text" name="nome" placeholder="Nome" class="borda_preta">
+                    <input type="text" name="site" placeholder="Site" class="borda_preta">
+                    <input type="text" name="uf" placeholder="UF" class="borda_preta">
+                    <input type="text" name="email" placeholder="E-mail" class="borda_preta">
+                    <button type="submit" class="borda-preta">
+                        Pesquisar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-    @forelse($fornecedores as $indice => $fornecedor)
-        Iteração atual: {{ $loop->iteration }}
-        <br>
-        Fornecedor: {{ $fornecedor['nome'] }}
-        <br>
-        Status: {{ $fornecedor['status'] }}
-        <br>
-        CNPJ: {{ $fornecedor['cnpj'] ?? '' }}
-        <br>
-        Telefone: ({{ $fornecedor['ddd'] ?? '' }}) {{ $fornecedor['telefone'] ?? '' }}
-        <br>
-        @if($loop->first)
-            Primeira iteração no loop
-
-            <br>
-            Total de registros: {{ $loop->count }}
-        @endif
-
-        @if($loop->last)
-            Última iteração no loop
-        @endif
-        <hr>
-    @empty
-        Não existem fornecedores cadastrados!!!
-    @endforelse
-@endisset
-
+@endsection
