@@ -13,6 +13,7 @@
                     @csrf
                     <input name="usuario" type="text" value="{{ old('usuario') }}" placeholder="Usuário" class="borda-preta">
                     {{$errors->has('usuario') ? $errors->first('usuario') : ''}}
+                   
                     <input name="senha" value="{{ old('senha') }}" type="password" placeholder="Senha"
                         class="borda-preta">
                         {{$errors->has('senha') ? $errors->first('senha') : ''}}
@@ -21,6 +22,7 @@
                         Acessar
                     </button>
                 </form>
+                {{isset($erro) && $erro != '' ? $erro : ''}}
             </div>
 
         </div>
