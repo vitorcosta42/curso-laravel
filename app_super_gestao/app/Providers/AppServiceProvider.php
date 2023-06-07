@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
+use App\Pagination\CustomPaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
-
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,12 +14,11 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
-
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
-        //
+
     }
 }

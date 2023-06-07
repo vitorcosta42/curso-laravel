@@ -18,8 +18,9 @@ class FornecedorController extends Controller
         $fornecedores = Fornecedor::where('nome', 'like', '%' . $request->input('nome') . '%')
             ->where('site', 'like', '%' . $request->input('site') . '%')
             ->where('uf', 'like', '%' . $request->input('uf') . '%')
-            ->where('email', 'like', '%' . $request->input('email') . '%')->get();
-        return view('app.fornecedor.listar',['fornecedores'=>$fornecedores]);
+            ->where('email', 'like', '%' . $request->input('email') . '%')
+            ->paginate(2);
+        return view('app.fornecedor.listar',['fornecedores'=>$fornecedores,'request'=>$request->all()]);
     }
 
 
@@ -50,22 +51,15 @@ class FornecedorController extends Controller
             $id = ($request->input('id'));
             $fornecedor = Fornecedor::find($id);
             $update = $fornecedor->update($request->all());
-            
             if($update) { 
                 $msg = 'Edição realizada com sucesso';
-
             } else { 
                 $msg = 'Erro ao tentar atualizar o registro';
-
-
             }
             return redirect()->route('app.fornecedor.editar',['id'=>$id, 'msg' => $msg]);
-
         }
-
         return view('app.fornecedor.adicionar', ['msg' => $msg]);
     }
-
     public function editar($id,$msg =''){
         $fornecedor  =Fornecedor::find($id);
         return view('app.fornecedor.adicionar',['fornecedor'=>$fornecedor,'msg'=>$msg]);
