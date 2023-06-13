@@ -7,9 +7,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PrincipalController;
 use App\Http\Controllers\ProdutoController;
+use App\Http\Controllers\ProdutoDetalheController;
 use App\Http\Controllers\SobreNosController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::get('/', [PrincipalController::class, 'principal'])
     ->name('site.index')
@@ -33,7 +33,10 @@ Route::middleware('autenticacao:padrao')
         Route::get('/fornecedor/adicionar',[FornecedorController::class, 'adicionar'])->name('app.fornecedor.adicionar');
         Route::post('/fornecedor/adicionar',[FornecedorController::class, 'adicionar'])->name('app.fornecedor.adicionar');
         Route::get('/fornecedor/editar/{id}/{msg?}',[FornecedorController::class, 'editar'])->name('app.fornecedor.editar');
+        Route::get('/fornecedor/excluir/{id}',[FornecedorController::class, 'excluir'])->name('app.fornecedor.excluir');
         Route::get('/produto', [ProdutoController::class, 'index'])->name('app.produto');
+        Route::resource('produto',ProdutoController::class);
+        Route::resource('produto-detalhe',ProdutoDetalheController::class);
     });
 
 Route::fallback(function () {
