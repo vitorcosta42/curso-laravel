@@ -34,6 +34,15 @@
                             <th>
                                 Unidade ID
                             </th>
+                            <th>
+                                Comprimento
+                            </th>
+                            <th>
+                                Altura
+                            </th>
+                            <th>
+                                Largura
+                            </th>
                             <th colspan="3">
                                 Ações
                             </th>
@@ -58,6 +67,18 @@
 
                                 </td>
                                 <td>
+                                    {{ $produto->itemDetalhe->comprimento ?? '' }}
+
+                                </td>
+                                <td>
+                                    {{ $produto->itemDetalhe->altura ?? '' }}
+
+                                </td>
+                                <td>
+                                    {{ $produto->itemDetalhe->largura ?? '' }}
+
+                                </td>
+                                <td>
                                     <a
                                         href="
                                         {{ route('produto.show', ['produto' => $produto->id]) }}
@@ -66,10 +87,12 @@
                                 </td>
                                 <td>
                                     <form id="form_{{ $produto->id }}"
-                                        action="{{ route('produto.destroy', ['produto' => $produto->id]) }}" method="post">
+                                        action="{{ route('produto.destroy', ['produto' => $produto->id]) }}"
+                                        method="post">
                                         @method('DELETE')
                                         @csrf
-                                        <a href="#" onclick="document.getElementById('form_{{$produto->id}}').submit()">
+                                        <a href="#"
+                                            onclick="document.getElementById('form_{{ $produto->id }}').submit()">
                                             Excluir
                                         </a>
                                     </form>
