@@ -25,8 +25,15 @@
                             <th>
                                 Nome
                             </th>
+
                             <th>
                                 Descrição
+                            </th>
+                            <th>
+                                Nome do Fornecedor
+                            </th>
+                            <th>
+                                Site do Fornecedor
                             </th>
                             <th>
                                 Peso
@@ -56,27 +63,27 @@
                                 </td>
                                 <td>
                                     {{ $produto->descricao }}
-
+                                </td>
+                                <td>
+                                    {{ $produto->fornecedor->nome }}
+                                </td>
+                                <td>
+                                    {{ $produto->fornecedor->site }}
                                 </td>
                                 <td>
                                     {{ $produto->peso }}
-
                                 </td>
                                 <td>
                                     {{ $produto->unidade_id }}
-
                                 </td>
                                 <td>
                                     {{ $produto->itemDetalhe->comprimento ?? '' }}
-
                                 </td>
                                 <td>
                                     {{ $produto->itemDetalhe->altura ?? '' }}
-
                                 </td>
                                 <td>
                                     {{ $produto->itemDetalhe->largura ?? '' }}
-
                                 </td>
                                 <td>
                                     <a
