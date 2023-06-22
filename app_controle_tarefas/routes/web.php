@@ -11,10 +11,12 @@ Route::get('/', function () {
 
 Auth::routes(['verify' => true]);
 
+Route::get('tarefa/exportacao/{extensao}', [TarefaController::class, 'exportacao'])->name('tarefa.exportacao');
+
 Route::resource('tarefa', TarefaController::class)
     ->middleware('verified');
 
-    Route::get(
+Route::get(
     '/mensagem-teste',
     function () {
         return new MensagemTesteMail();
