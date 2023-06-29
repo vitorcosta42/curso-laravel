@@ -24,13 +24,9 @@ class Modelo extends Model
             'abs' => 'required|boolean'
         ];
     }
-    public function feedback()
+
+    public function marca()
     {
-        return [
-            'required' => 'O campo :attribute é obrigatório',
-            'imagem.mimes' => 'O arquivo deve ser uma imagem PNG, JPEG ou JPG.',
-            'nome.unique' => 'O nome da marca já existe',
-            'nome.min' => 'O nome deve ter no mínimo 3 caracteres'
-        ];
+        return $this->belongsTo('App\Models\Marca');
     }
 }

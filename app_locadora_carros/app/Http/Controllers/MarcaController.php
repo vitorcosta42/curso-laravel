@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Marca;
+use App\Repositories\MarcaRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,17 +16,29 @@ class MarcaController extends Controller
         $this->marca = $marca;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->marca->all(), 200);
+        $marcaRepository = new MarcaRepository($this->marca);
+        if ($request->has('atributos_modelos')) {
+            $atributos_modelos = 'modelos:id,' . $request->atributos_modelos;
+            $marcaRepository->selectAtributosRegistrosRelacionados(
+                $atributos_modelos
+            );
+        } else {
+            $marcaRepository->selectAtributosRegistrosRelacionados('modelos');
+        }
+        if ($request->has('filtro')) {
+            $marcaRepository->filtro($request->filtro);
+        }
+
+        if ($request->has('atributos')) {
+            $marcaRepository->selectAtributos(
+                $request->atributos
+            );
+        }
+        return response()->json($marcaRepository->getResultado(), 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate(
@@ -42,12 +55,10 @@ class MarcaController extends Controller
         return response()->json($marca, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show($id)
     {
-        $marca = $this->marca->find($id);
+        $marca = $this->marca->with('modelos')->find($id);
         if ($marca === null) {
             return response()->json(
                 ['erro' => 'Recurso pesquisado não existe'],
@@ -58,12 +69,9 @@ class MarcaController extends Controller
     }
 
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-        $marca = $this->marca->find($id);
+        $marca = $this->marca->with('modelos')->find($id);
         if ($marca === null) {
             return response()->json(
                 ['erro' => 'Impossível realizar
@@ -93,17 +101,13 @@ class MarcaController extends Controller
         $imagem = $request->file('imagem');
         $imagem_urn = $imagem->store('imagens', 'public');
 
-        $marca->update([
-            'nome' => $request->nome,
-            'imagem' => $imagem_urn
-        ]);
+        $marca->fill($request->all());
+        $marca->imagem = $imagem_urn;
+        $marca->save();
 
         return response()->json($marca, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $marca = $this->marca->find($id);
