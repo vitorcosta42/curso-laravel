@@ -71,7 +71,7 @@ class MarcaController extends Controller
 
     public function update(Request $request, $id)
     {
-        $marca = $this->marca->with('modelos')->find($id);
+        $marca = $this->marca->find($id);
         if ($marca === null) {
             return response()->json(
                 ['erro' => 'Impossível realizar
