@@ -6,7 +6,6 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\LocacaoController;
 use App\Http\Controllers\MarcaController;
 use App\Http\Controllers\ModeloController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,7 +23,6 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function () {
 
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
-
 
     Route::apiResource('cliente', ClienteController::class);
     Route::apiResource('carro', CarroController::class);
