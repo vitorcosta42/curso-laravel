@@ -2,6 +2,16 @@
 import axios from "axios";
 
 export default {
+    computed: {
+        token() {
+            let token = document.cookie.split(";").find((indice) => {
+                return indice.includes("token=");
+            });
+            token = token.split("=")[1];
+            token = "Bearer " + token;
+            return token;
+        },
+    },
     data() {
         return {
             urlBase: "http://localhost:8000/api/v1/marca",
@@ -14,8 +24,14 @@ export default {
     },
     methods: {
         carregarLista() {
-            axios
-                .get(this.urlBase)
+            let config = {
+                headers: {
+                    Accept: "application/json",
+                    Authorization: this.token,
+                },
+            };
+
+            axios.get(this.urlBase, config)
                 .then((response) => {
                     this.marcas = response.data;
                 })
@@ -25,15 +41,18 @@ export default {
             this.arquivoImagem = e.target.files;
         },
         salvar() {
-            const formData = new FormData();
+            let formData = new FormData();
             formData.append("nome", this.nomeMarca);
             formData.append("imagem", this.arquivoImagem[0]);
-            const config = {
+
+            let config = {
                 headers: {
                     "Content-Type": "multipart/form-data",
                     Accept: "application/json",
+                    Authorization: this.token,
                 },
             };
+
             axios
                 .post(this.urlBase, formData, config)
                 .then((response) => {
@@ -124,7 +143,12 @@ export default {
                     <template v-slot:conteudo>
                         <Table
                             :dados="marcas"
-                            :titulos="['id', 'marca', 'imagem']"
+                            :titulos="{
+                                id:{titulo:'ID',tipo:'texto'},
+                                nome:{titulo:'Nome',tipo:'texto'},
+                                imagem:{titulo:'Imagem',tipo:'imagem'},
+                                created_at:{titulo:'Data de Criação',tipo:'data'},
+                            }"
                         >
                         </Table>
                     </template>
