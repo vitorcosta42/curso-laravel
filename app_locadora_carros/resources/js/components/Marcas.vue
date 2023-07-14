@@ -19,7 +19,7 @@ export default {
             arquivoImagem: [],
             transacaoStatus: "",
             transacaoDetalhes: {},
-            marcas: [],
+            marcas: { data: [] },
         };
     },
     methods: {
@@ -31,7 +31,8 @@ export default {
                 },
             };
 
-            axios.get(this.urlBase, config)
+            axios
+                .get(this.urlBase, config)
                 .then((response) => {
                     this.marcas = response.data;
                 })
@@ -142,18 +143,34 @@ export default {
                     </template>
                     <template v-slot:conteudo>
                         <Table
-                            :dados="marcas"
+                            :dados="marcas.data"
                             :titulos="{
-                                id:{titulo:'ID',tipo:'texto'},
-                                nome:{titulo:'Nome',tipo:'texto'},
-                                imagem:{titulo:'Imagem',tipo:'imagem'},
-                                created_at:{titulo:'Data de Criação',tipo:'data'},
+                                id: { titulo: 'ID', tipo: 'texto' },
+                                nome: { titulo: 'Nome', tipo: 'texto' },
+                                imagem: { titulo: 'Imagem', tipo: 'imagem' },
+                                created_at: {
+                                    titulo: 'Data de Criação',
+                                    tipo: 'data',
+                                },
                             }"
                         >
                         </Table>
                     </template>
                     <template v-slot:rodape>
-                        <button
+                        <div class="row">
+                            <div class="col-10">
+                                <Paginate>
+                                    <li v-for="l , key in marcas.links" 
+                                    :key="key" class="page-item">
+                                    <a href="#" class="page-link"
+                                    v-html="l.label">
+                                    </a>
+                                </li>
+                                </Paginate>
+                            </div>
+                        </div>
+                        <div class="col">
+ <button
                             type="button"
                             class="btn btn-primary btn-sm ms-auto"
                             data-bs-toggle="modal"
@@ -161,6 +178,8 @@ export default {
                         >
                             Adicionar
                         </button>
+                        </div>
+                       
                     </template>
                 </Card>
             </div>
