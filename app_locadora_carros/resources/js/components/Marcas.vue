@@ -20,23 +20,52 @@ export default {
             transacaoStatus: "",
             transacaoDetalhes: {},
             marcas: { data: [] },
+            busca: { id: "", nome: "" },
         };
     },
     methods: {
+        pesquisar() {
+            let filtro = "";
+            for (let chave in this.busca) {
+                if (this.busca[chave]) {
+                    if (filtro != "") {
+                        filtro += ";";
+                    }
+                    filtro += chave + ":like:" + this.busca[chave];
+                }
+            }
+            if (filtro != "") {
+                this.urlPaginacao = "page=1";
+                this.urlFiltro = "&filtro=" + filtro;
+            } else {
+                this.urlFiltro = "";
+            }
+            this.carregarLista();
+        },
+        paginacao(l) {
+            if (l.url) {
+                this.urlPaginacao = l.url.split("?")[1];
+                this.carregarLista();
+            }
+        },
         carregarLista() {
-            let config = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: this.token,
-                },
-            };
+            let url = this.urlBase + "?" + this.urlPaginacao + this.urlFiltro;
+
+            // let config = {
+            //     headers: {
+            //         Accept: "application/json",
+            //         Authorization: this.token,
+            //     },
+            // };
 
             axios
-                .get(this.urlBase, config)
+                .get(url)
                 .then((response) => {
                     this.marcas = response.data;
                 })
-                .catch((errors) => {});
+                .catch((errors) => {
+                    console.log(errors);
+                });
         },
         carregarImagem(e) {
             this.arquivoImagem = e.target.files;
@@ -99,6 +128,7 @@ export default {
                                         id="inputId"
                                         aria-describedby="idHelp"
                                         placeholder="ID"
+                                        v-model="busca.id"
                                     />
                                 </InputComponent>
                             </div>
@@ -115,6 +145,7 @@ export default {
                                         id="inputNome"
                                         aria-describedby="nomeHelp"
                                         placeholder="Nome"
+                                        v-model="busca.nome"
                                     />
                                 </InputComponent>
                             </div>
@@ -124,6 +155,7 @@ export default {
                         <button
                             type="submit"
                             class="btn btn-primary btn-sm ms-auto"
+                            @click="pesquisar()"
                         >
                             Pesquisar
                         </button>
@@ -144,6 +176,9 @@ export default {
                     <template v-slot:conteudo>
                         <Table
                             :dados="marcas.data"
+                            :visualizar="true"
+                            :atualizar="true"
+                            :remover="true"
                             :titulos="{
                                 id: { titulo: 'ID', tipo: 'texto' },
                                 nome: { titulo: 'Nome', tipo: 'texto' },
@@ -157,29 +192,29 @@ export default {
                         </Table>
                     </template>
                     <template v-slot:rodape>
-                        <div class="row">
-                            <div class="col-10">
-                                <Paginate>
-                                    <li v-for="l , key in marcas.links" 
-                                    :key="key" class="page-item">
-                                    <a href="#" class="page-link"
-                                    v-html="l.label">
-                                    </a>
-                                </li>
-                                </Paginate>
-                            </div>
+                        <Paginate>
+                            <li
+                                v-for="(l, key) in marcas.links"
+                                :key="key"
+                                :class="
+                                    l.active ? 'page-item active' : 'page-item'
+                                "
+                                @click="paginacao(l)"
+                            >
+                                <a href="#" class="page-link" v-html="l.label">
+                                </a>
+                            </li>
+                        </Paginate>
+                        <div class="ms-auto">
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalMarca"
+                            >
+                                Adicionar
+                            </button>
                         </div>
-                        <div class="col">
- <button
-                            type="button"
-                            class="btn btn-primary btn-sm ms-auto"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalMarca"
-                        >
-                            Adicionar
-                        </button>
-                        </div>
-                       
                     </template>
                 </Card>
             </div>
