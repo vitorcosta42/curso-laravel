@@ -119,7 +119,7 @@ class MarcaController extends Controller
         }
 
         Storage::disk('public')->delete($marca->imagem);
-
+        $marca->modelos()->delete();
         $marca->delete();
         return response()->json(['msg' => 'A marca foi removida com sucesso'], 200);
     }

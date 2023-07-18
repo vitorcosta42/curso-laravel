@@ -1,6 +1,17 @@
 <script>
 export default {
     props: ["dados", "titulos", "atualizar", "visualizar", "remover"],
+    methods: {
+        setStore(obj) {
+            this.$store.state.transacao.status = "";
+            this.$store.state.transacao.mensagem = "";
+            this.$store.state.item = obj;
+        },
+        formatDate(value) {
+            const parts = value.substring(0, 10).split("-");
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        },
+    },
     computed: {
         dadosFiltrados() {
             let campos = Object.keys(this.titulos);
@@ -16,12 +27,6 @@ export default {
             return dadosFiltrados;
         },
     },
-    methods: {
-        formatDate(value) {
-            const parts = value.substring(0, 10).split("-");
-            return `${parts[2]}/${parts[1]}/${parts[0]}`;
-        },
-    },
 };
 </script>
 
@@ -29,15 +34,10 @@ export default {
     <table class="table table-hover">
         <thead>
             <tr>
-                <th scope="col" v-for="(t, key) in titulos" :key="key">
+                <th v-for="(t, key) in titulos" :key="key">
                     {{ t.titulo }}
                 </th>
-                <th
-                    class="row justify-content-center"
-                    v-if="visualizar || atualizar || remover"
-                >
-                    Ações
-                </th>
+                <th v-if="visualizar.visivel || atualizar || remover"></th>
             </tr>
         </thead>
         <tbody>
@@ -58,10 +58,16 @@ export default {
                         />
                     </span>
                 </td>
-                <td class="row" v-if="visualizar || atualizar || remover">
+                <td
+                    class="row"
+                    v-if="visualizar.visivel || atualizar || remover.visivel"
+                >
                     <button
-                        v-if="visualizar"
+                        v-if="visualizar.visivel"
                         class="btn btn-outline-primary btn-sm col m-1"
+                        :data-bs-toggle="visualizar.dataToggle"
+                        :data-bs-target="visualizar.dataTarget"
+                        @click="setStore(obj)"
                     >
                         Visualizar
                     </button>
@@ -72,8 +78,11 @@ export default {
                         Atualizar
                     </button>
                     <button
-                        v-if="remover"
+                        v-if="remover.visivel"
                         class="btn btn-outline-danger btn-sm col m-1"
+                        :data-bs-toggle="remover.dataToggle"
+                        :data-bs-target="remover.dataTarget"
+                        @click="setStore(obj)"
                     >
                         Remover
                     </button>
