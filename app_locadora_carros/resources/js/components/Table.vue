@@ -5,11 +5,16 @@ export default {
         setStore(obj) {
             this.$store.state.transacao.status = "";
             this.$store.state.transacao.mensagem = "";
+            this.$store.state.transacao.dados = "";
             this.$store.state.item = obj;
         },
-        formatDate(value) {
-            const parts = value.substring(0, 10).split("-");
-            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        formataData(d) {
+            if (!d) return "";
+            d = d.split("T");
+            let data = d[0];
+            data = data.split("-");
+            data = data[2] + "/" + data[1] + "/" + data[0];
+            return data;
         },
     },
     computed: {
@@ -37,7 +42,13 @@ export default {
                 <th v-for="(t, key) in titulos" :key="key">
                     {{ t.titulo }}
                 </th>
-                <th v-if="visualizar.visivel || atualizar || remover"></th>
+                <th
+                    v-if="
+                        visualizar.visivel ||
+                        atualizar.visivel ||
+                        remover.visivel
+                    "
+                ></th>
             </tr>
         </thead>
         <tbody>
@@ -47,7 +58,7 @@ export default {
                         {{ valor }}
                     </span>
                     <span v-if="titulos[chaveValor].tipo == 'data'">{{
-                        formatDate(valor)
+                        formataData(valor)
                     }}</span>
 
                     <span v-if="titulos[chaveValor].tipo == 'imagem'">
@@ -60,7 +71,11 @@ export default {
                 </td>
                 <td
                     class="row"
-                    v-if="visualizar.visivel || atualizar || remover.visivel"
+                    v-if="
+                        visualizar.visivel ||
+                        atualizar.visivel ||
+                        remover.visivel
+                    "
                 >
                     <button
                         v-if="visualizar.visivel"
@@ -72,8 +87,11 @@ export default {
                         Visualizar
                     </button>
                     <button
-                        v-if="atualizar"
+                        v-if="atualizar.visivel"
                         class="btn btn-outline-primary btn-sm col m-1"
+                        :data-bs-toggle="atualizar.dataToggle"
+                        :data-bs-target="atualizar.dataTarget"
+                        @click="setStore(obj)"
                     >
                         Atualizar
                     </button>

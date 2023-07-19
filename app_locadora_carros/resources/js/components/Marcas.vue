@@ -6,16 +6,6 @@ export default {
     components: {
         Paginate,
     },
-    computed: {
-        token() {
-            let token = document.cookie.split(";").find((indice) => {
-                return indice.includes("token=");
-            });
-            token = token.split("=")[1];
-            token = "Bearer " + token;
-            return token;
-        },
-    },
     data() {
         return {
             urlBase: "http://localhost:8000/api/v1/marca",
@@ -30,6 +20,42 @@ export default {
         };
     },
     methods: {
+        atualizar() {
+            let formData = new FormData();
+            formData.append("_method", "patch");
+            formData.append("nome", this.$store.state.item.nome);
+            if (this.arquivoImagem[0]) {
+                formData.append("imagem", this.arquivoImagem[0]);
+            }
+
+            let url = this.urlBase + "/" + this.$store.state.item.id;
+
+            let config = {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            };
+
+            axios
+                .post(url, formData, config)
+                .then((response) => {
+                    this.$store.state.transacao.status = "sucesso";
+                    this.$store.state.transacao.mensagem =
+                        "Registro de marca atualizado com sucesso!";
+
+                    console.log("Atualizado", response);
+                    atualizarImagem.value = "";
+                    this.carregarLista();
+                })
+                .catch((errors) => {
+                    this.$store.state.transacao.status = "erro";
+                    this.$store.state.transacao.mensagem =
+                        errors.response.data.message;
+                    this.$store.state.transacao.dados =
+                        errors.response.data.errors;
+                    console.log("Erro de atualização", errors.response);
+                });
+        },
         remover() {
             let confirmacao = confirm(
                 "Tem certeza que deseja remover esse registro?"
@@ -39,15 +65,10 @@ export default {
             }
             let formData = new FormData();
             formData.append("_method", "delete");
-            let config = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: this.token,
-                },
-            };
             let url = this.urlBase + "/" + this.$store.state.item.id;
 
-            axios.post(url, formData, config)
+            axios
+                .post(url, formData)
                 .then((response) => {
                     this.$store.state.transacao.status = "sucesso";
                     this.$store.state.transacao.mensagem = response.data.msg;
@@ -84,16 +105,9 @@ export default {
             }
         },
         carregarLista() {
-            let config = {
-                headers: {
-                    Accept: "application/json",
-                    Authorization: this.token,
-                },
-            };
-
             let url = this.urlBase + "?" + this.urlPaginacao + this.urlFiltro;
             axios
-                .get(url, config)
+                .get(url)
                 .then((response) => {
                     this.marcas = response.data;
                 })
@@ -112,12 +126,11 @@ export default {
             let config = {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    Accept: "application/json",
-                    Authorization: this.token,
                 },
             };
 
-            axios.post(this.urlBase, formData, config)
+            axios
+                .post(this.urlBase, formData, config)
                 .then((response) => {
                     this.transacaoStatus = "adicionado";
                     this.transacaoDetalhes = {
@@ -214,7 +227,11 @@ export default {
                                 dataToggle: 'modal',
                                 dataTarget: '#modalMarcaVisualizar',
                             }"
-                            :atualizar="true"
+                            :atualizar="{
+                                visivel: true,
+                                dataToggle: 'modal',
+                                dataTarget: '#modalMarcaEditar',
+                            }"
                             :remover="{
                                 visivel: true,
                                 dataToggle: 'modal',
@@ -432,4 +449,72 @@ export default {
         </template>
     </Modal>
     <!--fim modal de remoção de marca -->
+    <!-- inicio modal de edição de marca-->
+    <Modal id="modalMarcaEditar" titulo="Editar Marca">
+        <template v-slot:alertas>
+            <Alert
+                tipo="success"
+                titulo="Ação realizada com sucesso"
+                :detalhes="$store.state.transacao"
+                v-if="$store.state.transacao.status == 'sucesso'"
+            ></Alert>
+
+            <Alert
+                tipo="danger"
+                titulo="Erro no processo"
+                :detalhes="$store.state.transacao"
+                v-if="$store.state.transacao.status == 'erro'"
+            >
+            </Alert>
+        </template>
+        <template v-slot:conteudo>
+            <div class="form-group mb-3">
+                <InputComponent
+                    titulo="Nome"
+                    id="atualizarNome"
+                    id-help="atualizarNomeHelp"
+                    texto-ajuda="Informe o nome da marca"
+                >
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="atualizarNome"
+                        aria-describedby="atualizarNomeHelp"
+                        placeholder="Nome"
+                        v-model="$store.state.item.nome"
+                    />
+                </InputComponent>
+            </div>
+            <div class="form-group">
+                <InputComponent
+                    titulo="Imagem"
+                    id="atualizarImagem"
+                    id-help="atualizarImagemHelp"
+                    texto-ajuda="Selecione uma imagem no formato PNG ou JPEG"
+                >
+                    <input
+                        type="file"
+                        class="form-control"
+                        id="atualizarImagem"
+                        aria-describedby="atualizarImagemHelp"
+                        placeholder="Selecione uma imagem"
+                        @change="carregarImagem($event)"
+                    />
+                </InputComponent>
+            </div>
+        </template>
+        <template v-slot:rodape>
+            <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+            >
+                Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" @click="atualizar()">
+                Editar
+            </button>
+        </template>
+    </Modal>
+    <!-- fim do modal de edição de  marca -->
 </template>

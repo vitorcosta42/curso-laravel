@@ -1,4 +1,4 @@
-import 'bootstrap';
+import "bootstrap";
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -6,10 +6,10 @@ import 'bootstrap';
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-import axios from 'axios';
+import axios from "axios";
 window.axios = axios;
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -31,3 +31,42 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+
+axios.interceptors.request.use(
+    (config) => {
+        config.headers.Accept = "application/json";
+        let token = document.cookie.split(";").find((indice) => {
+            return indice.includes("token=");
+        });
+        token = token.split("=")[1];
+        token = "Bearer " + token;
+        config.headers.Authorization = token;
+        return config;
+    },
+    (error) => {
+        console.log("Erro na requisição: ", error);
+        return Promise.reject(error);
+    }
+);
+
+axios.interceptors.response.use(
+    (response) => {
+        console.log("Interceptando a resposta antes da aplicação", response);
+        return response;
+    },
+    (error) => {
+        console.log("Erro na resposta: ", error);
+        if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token has expired"
+        ) {
+            axios.post("http://localhost:8000/api/refresh").then((response) => {
+                console.log("Refresh com sucesso: ", response);
+                document.cookie = "token=" + response.data.token;
+                console.log("Token atualizado", response.data.token);
+                window.location.reload();
+            });
+        }
+        return Promise.reject(error);
+    }
+);

@@ -9,6 +9,7 @@ const store = createStore({
             transacao: {
                 status: "",
                 mensagem: "",
+                dados: "",
             },
         };
     },
