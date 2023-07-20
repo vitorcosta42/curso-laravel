@@ -37,7 +37,7 @@ class ModeloController extends Controller
                 $request->atributos 
             );
         }
-        return response()->json($modeloRepository->getResultado(), 200);
+        return response()->json($modeloRepository->getResultadoPaginado(3), 200);
     }
 
     public function store(Request $request)

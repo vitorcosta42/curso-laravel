@@ -36,11 +36,15 @@ export default {
 </script>
 
 <template>
+    <div class="table-responsive">
+
     <table class="table table-hover">
         <thead>
             <tr>
-                <th v-for="(t, key) in titulos" :key="key">
-                    {{ t.titulo }}
+                <th  class="align-middle" v-for="(t, key) in titulos" :key="key">
+                    <h6  class="fw-bold d-flex align-items-center justify-content-center"  v-if="titulos[key].visivel !== false">
+                        {{ t.titulo }}
+                    </h6>
                 </th>
                 <th
                     v-if="
@@ -53,59 +57,82 @@ export default {
         </thead>
         <tbody>
             <tr v-for="(obj, chave) in dadosFiltrados" :key="chave">
-                <td v-for="(valor, chaveValor) in obj" :key="chaveValor">
-                    <span v-if="titulos[chaveValor].tipo == 'texto'">
-                        {{ valor }}
-                    </span>
-                    <span v-if="titulos[chaveValor].tipo == 'data'">{{
-                        formataData(valor)
-                    }}</span>
-
-                    <span v-if="titulos[chaveValor].tipo == 'imagem'">
-                        <img
-                            :src="'/storage/' + valor"
-                            width="30"
-                            height="30"
-                        />
-                    </span>
-                </td>
                 <td
-                    class="row"
+                    class="align-middle"
+                    v-for="(valor, chaveValor) in obj"
+                    :key="chaveValor"
+                >
+                    <div
+                        class="d-flex align-items-center justify-content-center"
+                    >
+                        <span v-if="titulos[chaveValor].tipo == 'texto'">
+                            {{ valor }}
+                        </span>
+                        <span v-if="titulos[chaveValor].tipo == 'data'">{{
+                            formataData(valor)
+                        }}</span>
+
+                        <span
+                            v-if="
+                                titulos[chaveValor].tipo == 'imagem' &&
+                                titulos[chaveValor].visivel !== false
+                            "
+                        >
+                            <img
+                                :src="'/storage/' + valor"
+                                width="30"
+                                height="30"
+                            />
+                        </span>
+                    </div>
+                </td>
+
+                <td
+                class="align-middle"
                     v-if="
                         visualizar.visivel ||
                         atualizar.visivel ||
                         remover.visivel
                     "
                 >
-                    <button
-                        v-if="visualizar.visivel"
-                        class="btn btn-outline-primary btn-sm col m-1"
-                        :data-bs-toggle="visualizar.dataToggle"
-                        :data-bs-target="visualizar.dataTarget"
-                        @click="setStore(obj)"
-                    >
-                        Visualizar
-                    </button>
-                    <button
-                        v-if="atualizar.visivel"
-                        class="btn btn-outline-primary btn-sm col m-1"
-                        :data-bs-toggle="atualizar.dataToggle"
-                        :data-bs-target="atualizar.dataTarget"
-                        @click="setStore(obj)"
-                    >
-                        Atualizar
-                    </button>
-                    <button
-                        v-if="remover.visivel"
-                        class="btn btn-outline-danger btn-sm col m-1"
-                        :data-bs-toggle="remover.dataToggle"
-                        :data-bs-target="remover.dataTarget"
-                        @click="setStore(obj)"
-                    >
-                        Remover
-                    </button>
+                    <div 
+                    class="btn-group gap-2 
+                    d-flex align-items-center justify-content-center"
+                    role="group">
+                        <button
+                            v-if="visualizar.visivel"
+                            class="btn btn-outline-primary btn-sm rounded"
+                            :data-bs-toggle="visualizar.dataToggle"
+                            :data-bs-target="visualizar.dataTarget"
+                            @click="setStore(obj)"
+                        >
+                            <i class="fas fa-eye"></i>
+                        </button>
+
+                        <button
+                            v-if="atualizar.visivel"
+                            class="btn btn-outline-primary btn-sm rounded"
+                            :data-bs-toggle="atualizar.dataToggle"
+                            :data-bs-target="atualizar.dataTarget"
+                            @click="setStore(obj)"
+                        >
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <button
+                            v-if="remover.visivel"
+                            class="btn btn-outline-danger btn-sm rounded"
+                            :data-bs-toggle="remover.dataToggle"
+                            :data-bs-target="remover.dataTarget"
+                            @click="setStore(obj)"
+                        >
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         </tbody>
     </table>
+</div>
+
 </template>

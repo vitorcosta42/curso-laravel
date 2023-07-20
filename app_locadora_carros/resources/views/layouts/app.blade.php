@@ -13,7 +13,11 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
+    <head>
+        <!-- Other meta tags and CSS links -->
+        <script src="https://kit.fontawesome.com/cecfd4c125.js" crossorigin="anonymous"></script>
+    </head>
+    
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
@@ -55,7 +59,7 @@
                                     <a href="#" class="dropdown-item">Carros</a>
                                     <div class="dropdown-divider"></div>
                                     <a href="{{ route('marcas') }}" class="dropdown-item">Marcas</a>
-                                    <a href="#" class="dropdown-item">Modelos</a>
+                                    <a href="{{ route('modelos') }}" class="dropdown-item">Modelos</a>
                                 </div>
 
                             </li>
@@ -106,7 +110,7 @@
                 <ol class="breadcrumb p-2 bg-primary">
                     <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-light">Home</a></li>
                     <li class="breadcrumb-item active text-light" aria-current="page">
-                        {{ Route::currentRouteName()}}
+                        {{ Route::currentRouteName() }}
                     </li>
                 </ol>
             </nav>
