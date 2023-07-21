@@ -41,6 +41,14 @@ export default {
             let formData = new FormData();
             formData.append("_method", "patch");
             formData.append("nome", this.$store.state.item.nome);
+            formData.append("marca_id", this.$store.state.item.marca.id);
+            formData.append(
+                "numero_portas",
+                this.$store.state.item.numero_portas
+            );
+            formData.append("lugares", this.$store.state.item.lugares);
+            formData.append("air_bag", this.$store.state.item.air_bag);
+            formData.append("abs", this.$store.state.item.abs);
             if (this.arquivoImagem[0]) {
                 formData.append("imagem", this.arquivoImagem[0]);
             }
@@ -263,8 +271,12 @@ export default {
                             :titulos="{
                                 id: { titulo: 'ID', tipo: 'texto' },
                                 nome: { titulo: 'Nome', tipo: 'texto' },
-                                marca_id :{titulo: 'Marca', tipo:'texto'},
-                                imagem: { titulo: 'Imagem', tipo: 'imagem',visivel:false },
+                                marca: { titulo: 'Marca', tipo: 'texto' },
+                                imagem: {
+                                    titulo: 'Imagem',
+                                    tipo: 'imagem',
+                                    visivel: false,
+                                },
                                 numero_portas: {
                                     titulo: 'N° de Portas',
                                     tipo: 'texto',
@@ -347,7 +359,7 @@ export default {
                     titulo="Marca"
                     id="selectMarca"
                     id-help="novoNomeHelp"
-                    texto-ajuda="Informe o nome da modelo"
+                    texto-ajuda="Informe a marca do modelo"
                     class="w-100"
                 >
                     <select
@@ -356,7 +368,10 @@ export default {
                         id="selectMarca"
                         v-model="marca_id"
                     >
-                        <option selected>Selecione a marca</option>
+                        <option value="" disabled selected>
+                            Selecione a marca
+                        </option>
+
                         <option
                             v-for="marca in marcas.data"
                             :key="marca.id"
@@ -381,7 +396,7 @@ export default {
                         aria-describedby="novoNumeroPortas"
                         v-model="numero_portas"
                     >
-                        <option selected>Selecionar</option>
+                        <option value="" disabled selected>Selecionar</option>
                         <option :value="1">1</option>
                         <option :value="2">2</option>
                         <option :value="3">3</option>
@@ -421,8 +436,9 @@ export default {
                         name="Airbag"
                         id="selectAirbag"
                         v-model="air_bag"
+                        placeholder="Selecionar"
                     >
-                        <option selected>Selecionar</option>
+                        <option value="" disabled selected>Selecionar</option>
                         <option :value="1">Possui</option>
                         <option :value="0">Não possui</option>
                     </select>
@@ -441,7 +457,7 @@ export default {
                         aria-describedby="NovoAbsHelp"
                         v-model="abs"
                     >
-                        <option selected>Selecionar</option>
+                        <option value="" disabled selected>Selecionar</option>
                         <option :value="1">Possui</option>
                         <option :value="0">Não possui</option>
                     </select>
@@ -480,6 +496,7 @@ export default {
     </Modal>
     <!-- fim do modal de adicionar modelo -->
     <!-- inicio modal de visualizar modelo -->
+
     <Modal id="modalModeloVisualizar" titulo="Visualizar Modelo">
         <template v-slot:alertas></template>
         <template v-slot:conteudo>
@@ -488,6 +505,14 @@ export default {
                     type="text"
                     class="form-control"
                     :value="$store.state.item.id"
+                    disabled
+                />
+            </InputComponent>
+            <InputComponent titulo="Marca do Modelo">
+                <input
+                    type="text"
+                    class="form-control"
+                    :value="$store.state.item.marca?.nome"
                     disabled
                 />
             </InputComponent>
@@ -505,14 +530,6 @@ export default {
                     class="d-flex"
                 />
             </InputComponent>
-            <InputComponent titulo="Data de Criação">
-                <input
-                    type="text"
-                    class="form-control"
-                    :value="$store.state.item.created_at"
-                    disabled
-                />
-            </InputComponent>
         </template>
 
         <template v-slot:rodape>
@@ -528,7 +545,7 @@ export default {
     <!--fim modal de visualizar modelo -->
 
     <!-- inicio modal de remoção de modelo-->
-    <Modal id="modalModeloRemover" titulo="Remover modelo">
+    <Modal id="modalModeloRemover" titulo="Remover Modelo">
         <template v-slot:alertas>
             <Alert
                 tipo="success"
@@ -554,7 +571,7 @@ export default {
                     disabled
                 />
             </InputComponent>
-            <InputComponent titulo="Nome da modelo">
+            <InputComponent titulo="Nome do Modelo">
                 <input
                     type="text"
                     class="form-control"
@@ -585,7 +602,7 @@ export default {
     </Modal>
     <!--fim modal de remoção de modelo -->
     <!-- inicio modal de edição de modelo-->
-    <Modal id="modalModeloEditar" titulo="Editar modelo">
+    <Modal id="modalModeloEditar" titulo="Editar Modelo">
         <template v-slot:alertas>
             <Alert
                 tipo="success"
@@ -603,12 +620,13 @@ export default {
             </Alert>
         </template>
         <template v-slot:conteudo>
-            <div class="form-group mb-3">
+            <div class="form-group d-flex mb-3 gap-3">
                 <InputComponent
                     titulo="Nome"
                     id="atualizarNome"
                     id-help="atualizarNomeHelp"
-                    texto-ajuda="Informe o nome da modelo"
+                    texto-ajuda="Informe o nome do modelo"
+                    class="w-100"
                 >
                     <input
                         type="text"
@@ -619,6 +637,118 @@ export default {
                         v-model="$store.state.item.nome"
                     />
                 </InputComponent>
+
+                <InputComponent
+                    titulo="Marca"
+                    id="atualizarMarca"
+                    id-help="atualizarMarcaHelp"
+                    texto-ajuda="Informe a marca do modelo"
+                    class="w-100"
+                >
+                    <div v-if="$store.state.item && $store.state.item.marca">
+                        <select
+                            class="form-select"
+                            name="Marca"
+                            id="atualizarMarca"
+                            v-model="$store.state.item.marca.id"
+                            aria-describedby="atualizarMarcaHelp"
+                        >
+                            <option value="" disabled>Selecionar</option>
+                            <option
+                                v-for="marca in marcas.data"
+                                :key="marca.id"
+                                :value="marca.id"
+                            >
+                                {{
+                                    marca.nome
+                                }}
+                            </option>
+                        </select>
+                    </div>
+                </InputComponent>
+            </div>
+
+            <div class="form-group d-flex mb-3 gap-3">
+                <InputComponent
+                    titulo="Número de Portas"
+                    id="numeroPortas"
+                    id-help="atualizarNumeroPortas"
+                    texto-ajuda="Informe o número de portas"
+                    class="w-100"
+                >
+                    <select
+                        class="form-select"
+                        id="numeroPortas"
+                        aria-describedby="atualizarNumeroPortas"
+                        v-model="$store.state.item.numero_portas"
+                    >
+                        <option value="" disabled selected>Selecionar</option>
+                        <option :value="1">1</option>
+                        <option :value="2">2</option>
+                        <option :value="3">3</option>
+                        <option :value="4">4</option>
+                        <option :value="5">5</option>
+                    </select>
+                </InputComponent>
+
+                <InputComponent
+                    titulo="Lugares"
+                    id="atualizarLugares"
+                    id-help="atualizarLugaresHelp"
+                    texto-ajuda="Informe a quantidade de lugares"
+                    class="w-100"
+                >
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="atualizarLugares"
+                        aria-describedby="atualizarLugaresHelp"
+                        placeholder="Quantidade de Lugares"
+                        v-model="$store.state.item.lugares"
+                    />
+                </InputComponent>
+            </div>
+
+            <div class="form-group d-flex gap-3">
+                <InputComponent
+                    titulo="Airbag"
+                    id="atualizarAirbag"
+                    id-help="atualizarAirbagHelp"
+                    texto-ajuda="Informe se o veículo possui Airbag"
+                    class="w-100"
+                >
+                    <select
+                        class="form-select"
+                        name="Airbag"
+                        id="atualizarAirbag"
+                        aria-describedby="atualizarAirbagHelp"
+                        v-model="$store.state.item.air_bag"
+                        placeholder="Selecionar"
+                    >
+                        <option value="" disabled selected>Selecionar</option>
+                        <option :value="1">Possui</option>
+                        <option :value="0">Não possui</option>
+                    </select>
+                </InputComponent>
+                <InputComponent
+                    titulo="Freio ABS"
+                    id="atualizarAbs"
+                    id-help="atualizarAbsHelp"
+                    texto-ajuda="Informe se o veículo possui ABS"
+                    class="w-100"
+                >
+                    <select
+                        class="form-select"
+                        name="Abs"
+                        id="atualizarAbs"
+                        aria-describedby="atualizarAbsHelp"
+                        v-model="$store.state.item.abs"
+                    >
+                        <option value="" disabled selected>Selecionar</option>
+                        <option :value="1">Possui</option>
+                        <option :value="0">Não possui</option>
+                    </select>
+                </InputComponent>
             </div>
             <div class="form-group">
                 <InputComponent
@@ -626,6 +756,7 @@ export default {
                     id="atualizarImagem"
                     id-help="atualizarImagemHelp"
                     texto-ajuda="Selecione uma imagem no formato PNG ou JPEG"
+                    class="w-100"
                 >
                     <input
                         type="file"

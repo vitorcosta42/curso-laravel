@@ -44,18 +44,19 @@ axios.interceptors.request.use(
         return config;
     },
     (error) => {
-        console.log("Erro na requisição: ", error);
+        console.log(error);
         return Promise.reject(error);
     }
 );
 
 axios.interceptors.response.use(
     (response) => {
-        console.log("Interceptando a resposta antes da aplicação", response);
+        console.log(response.config.url);
+        console.log(response);
         return response;
     },
     (error) => {
-        console.log("Erro na resposta: ", error);
+        console.log(error);
         if (
             error.response.status == 401 &&
             error.response.data.message == "Token has expired"
