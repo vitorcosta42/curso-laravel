@@ -8,13 +8,13 @@ export default {
     },
     data() {
         return {
-            urlBase: "http://localhost:8000/api/v1/marca",
+            urlBase: "http://localhost:8000/api/v1/cliente",
             urlFiltro: "",
-            nomeMarca: "",
+            nomeCliente: "",
             arquivoImagem: [],
             transacaoStatus: "",
             transacaoDetalhes: {},
-            marcas: { data: [] },
+            clientes: { data: [] },
             busca: { id: "", nome: "" },
         };
     },
@@ -40,7 +40,7 @@ export default {
                 .then((response) => {
                     this.$store.state.transacao.status = "sucesso";
                     this.$store.state.transacao.mensagem =
-                        "Registro de marca atualizado com sucesso!";
+                        "Registro de cliente atualizado com sucesso!";
 
                     console.log("Atualizado", response);
                     atualizarImagem.value = "";
@@ -102,7 +102,7 @@ export default {
             axios
                 .get(url)
                 .then((response) => {
-                    this.marcas = response;
+                    this.clientes = response;
                 })
                 .catch((errors) => {
                     console.log(errors);
@@ -114,7 +114,7 @@ export default {
         },
         salvar() {
             let formData = new FormData();
-            formData.append("nome", this.nomeMarca);
+            formData.append("nome", this.nomeCliente);
             formData.append("imagem", this.arquivoImagem[0]);
 
             let config = {
@@ -152,7 +152,7 @@ export default {
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <!-- inicio card de busca -->
-                <Card titulo="Busca de Marcas">
+                <Card titulo="Busca de Clientes">
                     <template v-slot:conteudo>
                         <div class="row">
                             <div class="form-group col">
@@ -160,7 +160,7 @@ export default {
                                     titulo="ID"
                                     id="inputId"
                                     id-help="idHelp"
-                                    texto-ajuda="Opcional. Informe o ID da marca"
+                                    texto-ajuda="Opcional. Informe o ID do cliente"
                                 >
                                     <input
                                         type="number"
@@ -177,7 +177,7 @@ export default {
                                     titulo="Nome"
                                     id="inputNome"
                                     id-help="nomeHelp"
-                                    texto-ajuda="Opcional. Informe o nome da marca"
+                                    texto-ajuda="Opcional. Informe o nome da cliente"
                                 >
                                     <input
                                         type="text"
@@ -204,7 +204,7 @@ export default {
                 <!-- fim card de busca -->
 
                 <!-- inicio card listagem -->
-                <Card titulo="Relação de Marcas">
+                <Card titulo="Relação de Clientes">
                     <template v-slot:refresh>
                         <button
                             class="btn btn-primary btn-sm ms-auto bg-white text-primary"
@@ -215,26 +215,21 @@ export default {
                     </template>
                     <template v-slot:conteudo>
                         <Table
-                            :dados="marcas.data"
+                            :dados="clientes.data"
                             :visualizar="{
-                                visivel: true,
-                                dataToggle: 'modal',
-                                dataTarget: '#modalMarcaVisualizar',
+                                visivel: false,
                             }"
                             :atualizar="{
-                                visivel: true,
-                                dataToggle: 'modal',
-                                dataTarget: '#modalMarcaEditar',
+                                visivel: false,
                             }"
                             :remover="{
                                 visivel: true,
                                 dataToggle: 'modal',
-                                dataTarget: '#modalMarcaRemover',
+                                dataTarget: '#modalClienteRemover',
                             }"
                             :titulos="{
                                 id: { titulo: 'ID', tipo: 'texto' },
                                 nome: { titulo: 'Nome', tipo: 'texto' },
-                                imagem: { titulo: 'Imagem', tipo: 'imagem' },
                                 created_at: {
                                     titulo: 'Data de Criação',
                                     tipo: 'data',
@@ -249,7 +244,7 @@ export default {
                                 type="button"
                                 class="btn btn-primary btn-sm"
                                 data-bs-toggle="modal"
-                                data-bs-target="#modalMarca"
+                                data-bs-target="#modalCliente"
                             >
                                 Adicionar
                             </button>
@@ -261,7 +256,7 @@ export default {
         </div>
     </div>
     <!-- Modal -->
-    <Modal id="modalMarca" titulo="Adicionar Marca">
+    <Modal id="modalCliente" titulo="Adicionar Cliente">
         <template v-slot:alertas>
             <Alert
                 tipo="success"
@@ -272,7 +267,7 @@ export default {
             <Alert
                 tipo="danger"
                 :detalhes="transacaoDetalhes"
-                titulo="Erro ao tentar cadastrar a marca"
+                titulo="Erro ao tentar cadastrar o cliente"
                 v-if="transacaoStatus == 'erro'"
             ></Alert>
         </template>
@@ -282,7 +277,7 @@ export default {
                     titulo="Nome"
                     id="novoNome"
                     id-help="novoNomeHelp"
-                    texto-ajuda="Informe o nome da marca"
+                    texto-ajuda="Informe o nome do cliente"
                 >
                     <input
                         type="text"
@@ -290,24 +285,7 @@ export default {
                         id="novoNome"
                         aria-describedby="novoNomeHelp"
                         placeholder="Nome"
-                        v-model="nomeMarca"
-                    />
-                </InputComponent>
-            </div>
-            <div class="form-group">
-                <InputComponent
-                    titulo="Imagem"
-                    id="novoImagem"
-                    id-help="novoImagemHelp"
-                    texto-ajuda="Selecione uma imagem no formato PNG ou JPEG"
-                >
-                    <input
-                        type="file"
-                        class="form-control"
-                        id="novoImagem"
-                        aria-describedby="novoImagemHelp"
-                        placeholder="Selecione uma imagem"
-                        @change="carregarImagem($event)"
+                        v-model="nomeCliente"
                     />
                 </InputComponent>
             </div>
@@ -325,57 +303,10 @@ export default {
             </button>
         </template>
     </Modal>
-    <!-- fim do modal de adicionar marca -->
-    <!-- inicio modal de visualizar marca -->
-    <Modal id="modalMarcaVisualizar" titulo="Visualizar Marca">
-        <template v-slot:alertas></template>
-        <template v-slot:conteudo>
-            <InputComponent titulo="ID">
-                <input
-                    type="text"
-                    class="form-control"
-                    :value="$store.state.item.id"
-                    disabled
-                />
-            </InputComponent>
-            <InputComponent titulo="Nome da Marca">
-                <input
-                    type="text"
-                    class="form-control"
-                    :value="$store.state.item.nome"
-                    disabled
-                />
-            </InputComponent>
-            <InputComponent titulo="Imagem da Marca">
-                <img
-                    :src="'storage/' + $store.state.item.imagem"
-                    class="d-flex"
-                />
-            </InputComponent>
-            <InputComponent titulo="Data de Criação">
-                <input
-                    type="text"
-                    class="form-control"
-                    :value="$store.state.item.created_at"
-                    disabled
-                />
-            </InputComponent>
-        </template>
+    <!-- fim do modal de adicionar cliente -->
 
-        <template v-slot:rodape>
-            <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-            >
-                Fechar
-            </button>
-        </template>
-    </Modal>
-    <!--fim modal de visualizar marca -->
-
-    <!-- inicio modal de remoção de marca-->
-    <Modal id="modalMarcaRemover" titulo="Remover Marca">
+    <!-- inicio modal de remoção de cliente-->
+    <Modal id="modalClienteRemover" titulo="Remover Cliente">
         <template v-slot:alertas>
             <Alert
                 tipo="success"
@@ -401,7 +332,7 @@ export default {
                     disabled
                 />
             </InputComponent>
-            <InputComponent titulo="Nome da Marca">
+            <InputComponent titulo="Nome do Cliente">
                 <input
                     type="text"
                     class="form-control"
@@ -430,73 +361,5 @@ export default {
             </button>
         </template>
     </Modal>
-    <!--fim modal de remoção de marca -->
-    <!-- inicio modal de edição de marca-->
-    <Modal id="modalMarcaEditar" titulo="Editar Marca">
-        <template v-slot:alertas>
-            <Alert
-                tipo="success"
-                titulo="Ação realizada com sucesso"
-                :detalhes="$store.state.transacao"
-                v-if="$store.state.transacao.status == 'sucesso'"
-            ></Alert>
-
-            <Alert
-                tipo="danger"
-                titulo="Erro no processo"
-                :detalhes="$store.state.transacao"
-                v-if="$store.state.transacao.status == 'erro'"
-            >
-            </Alert>
-        </template>
-        <template v-slot:conteudo>
-            <div class="form-group mb-3">
-                <InputComponent
-                    titulo="Nome"
-                    id="atualizarNome"
-                    id-help="atualizarNomeHelp"
-                    texto-ajuda="Informe o nome da marca"
-                >
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="atualizarNome"
-                        aria-describedby="atualizarNomeHelp"
-                        placeholder="Nome"
-                        v-model="$store.state.item.nome"
-                    />
-                </InputComponent>
-            </div>
-            <div class="form-group">
-                <InputComponent
-                    titulo="Imagem"
-                    id="atualizarImagem"
-                    id-help="atualizarImagemHelp"
-                    texto-ajuda="Selecione uma imagem no formato PNG ou JPEG"
-                >
-                    <input
-                        type="file"
-                        class="form-control"
-                        id="atualizarImagem"
-                        aria-describedby="atualizarImagemHelp"
-                        placeholder="Selecione uma imagem"
-                        @change="carregarImagem($event)"
-                    />
-                </InputComponent>
-            </div>
-        </template>
-        <template v-slot:rodape>
-            <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-            >
-                Cancelar
-            </button>
-            <button type="button" class="btn btn-primary" @click="atualizar()">
-                Editar
-            </button>
-        </template>
-    </Modal>
-    <!-- fim do modal de edição de  marca -->
+    <!--fim modal de remoção de cliente -->
 </template>

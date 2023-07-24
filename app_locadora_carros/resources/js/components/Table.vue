@@ -41,24 +41,25 @@ export default {
             <thead>
                 <tr>
                     <th
-                        class="align-middle"
+                        class="text-center"
                         v-for="(t, key) in titulos"
                         :key="key"
                     >
-                        <h6
-                            class="fw-bold d-flex align-items-center justify-content-center"
-                            v-if="titulos[key].visivel !== false"
-                        >
+                        <div v-if="titulos[key].visivel !== false">
                             {{ t.titulo }}
-                        </h6>
+                        </div>
                     </th>
+
                     <th
+                        class="text-center "
                         v-if="
                             visualizar.visivel ||
                             atualizar.visivel ||
                             remover.visivel
                         "
-                    ></th>
+                    >
+                        Ações
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -80,9 +81,7 @@ export default {
                                 {{ valor }}
                             </span>
                             <span
-                                v-else-if="
-                                    titulos[chaveValor].tipo == 'texto' 
-                                "
+                                v-else-if="titulos[chaveValor].tipo == 'texto'"
                             >
                                 {{ valor.nome }}
                             </span>
@@ -115,7 +114,11 @@ export default {
                         "
                     >
                         <div
-                            class="btn-group gap-2 d-flex align-items-center justify-content-center"
+                            class="btn-group 
+                            gap-2 
+                            d-flex
+                             align-items-center 
+                             justify-content-center"
                             role="group"
                         >
                             <button

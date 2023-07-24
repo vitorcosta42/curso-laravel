@@ -20,10 +20,15 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/marcas',function(){
+
+Route::get('/marcas', function () {
     return view('app.marcas');
 })->name('marcas')->middleware('auth');
 
-Route::get('/modelos',function(){
+Route::get('/modelos', function () {
     return view('app.modelos');
 })->name('modelos')->middleware('auth');
+
+Route::get('/clientes', function () {
+    return view('app.clientes');
+})->name('clientes')->middleware('auth');

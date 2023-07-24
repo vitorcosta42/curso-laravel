@@ -40,7 +40,7 @@
                     <ul class="navbar-nav me-auto">
                         @auth
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="{{route('clientes')}}" class="nav-link">
                                     Clientes
                                 </a>
                             </li>

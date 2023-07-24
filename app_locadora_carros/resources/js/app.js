@@ -20,6 +20,7 @@ app.use(store);
 
 import LoginComponent from "./components/Login.vue";
 import HomeComponent from "./components/Home.vue";
+import ClientesComponent from "./components/Clientes.vue";
 import MarcasComponent from "./components/Marcas.vue";
 import ModelosComponent from "./components/Modelos.vue";
 import InputComponent from "./components/InputComponent.vue";
@@ -31,6 +32,7 @@ import Paginate from "./components/Paginate.vue";
 
 app.component("Login", LoginComponent);
 app.component("Home", HomeComponent);
+app.component("Clientes", ClientesComponent);
 app.component("Marcas", MarcasComponent);
 app.component("Modelos", ModelosComponent);
 app.component("InputComponent", InputComponent);
