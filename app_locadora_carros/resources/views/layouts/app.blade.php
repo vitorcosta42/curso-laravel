@@ -13,11 +13,12 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+
     <head>
         <!-- Other meta tags and CSS links -->
         <script src="https://kit.fontawesome.com/cecfd4c125.js" crossorigin="anonymous"></script>
     </head>
-    
+
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
@@ -40,7 +41,7 @@
                     <ul class="navbar-nav me-auto">
                         @auth
                             <li class="nav-item">
-                                <a href="{{route('clientes')}}" class="nav-link">
+                                <a href="{{ route('clientes') }}" class="nav-link">
                                     Clientes
                                 </a>
                             </li>
@@ -56,7 +57,7 @@
                                     Veículos
                                 </a>
                                 <div class="dropdown-menu">
-                                    <a href="#" class="dropdown-item">Carros</a>
+                                    <a href="{{ route('carros') }}" class="dropdown-item">Carros</a>
                                     <div class="dropdown-divider"></div>
                                     <a href="{{ route('marcas') }}" class="dropdown-item">Marcas</a>
                                     <a href="{{ route('modelos') }}" class="dropdown-item">Modelos</a>

@@ -51,7 +51,7 @@ export default {
                     </th>
 
                     <th
-                        class="text-center "
+                        class="text-center"
                         v-if="
                             visualizar.visivel ||
                             atualizar.visivel ||
@@ -75,7 +75,8 @@ export default {
                             <span
                                 v-if="
                                     titulos[chaveValor].tipo == 'texto' &&
-                                    titulos[chaveValor].titulo !== 'Marca'
+                                    titulos[chaveValor].titulo !== 'Marca' &&
+                                    titulos[chaveValor].titulo !== 'Modelo'
                                 "
                             >
                                 {{ valor }}
@@ -114,11 +115,15 @@ export default {
                         "
                     >
                         <div
-                            class="btn-group 
-                            gap-2 
-                            d-flex
-                             align-items-center 
-                             justify-content-center"
+                            :class="[
+                                'btn-group',
+                                'gap-2',
+                                visualizar.visivel || atualizar.visivel
+                                    ? 'd-flex'
+                                    : 'd-block text-center',
+                                'align-items-center',
+                                'justify-content-center',
+                            ]"
                             role="group"
                         >
                             <button
