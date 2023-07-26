@@ -18,4 +18,13 @@ class Locacao extends Model
     public function rules() { 
         return [];
     }
+    public function cliente()
+    {
+        return $this->belongsTo('App\Models\Cliente');
+    }
+    public function carro()
+    {
+        return $this->belongsTo('App\Models\Carro');
+    }
+
 }

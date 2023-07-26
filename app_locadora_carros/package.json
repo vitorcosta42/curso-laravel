@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "bootstrap-icons": "^1.10.5",
+        "moment": "^2.29.4",
         "vuex": "^4.1.0"
     }
 }

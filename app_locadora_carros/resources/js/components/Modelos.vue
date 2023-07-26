@@ -122,7 +122,7 @@ export default {
             this.carregarLista();
         },
         carregarLista() {
-            let url = this.urlBase +  this.urlFiltro;
+            let url = this.urlBase + "?" + this.urlFiltro;
             axios
                 .get(url)
                 .then((response) => {
@@ -639,9 +639,7 @@ export default {
                                 :key="marca.id"
                                 :value="marca.id"
                             >
-                                {{
-                                    marca.nome
-                                }}
+                                {{ marca.nome }}
                             </option>
                         </select>
                     </div>

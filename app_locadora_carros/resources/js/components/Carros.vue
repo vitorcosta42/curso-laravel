@@ -17,7 +17,7 @@ export default {
             transacaoStatus: "",
             transacaoDetalhes: {},
             carros: { data: [] },
-            busca: { id: "", nome: "" },
+            busca: { id: "", placa: "" },
         };
     },
     methods: {
@@ -54,10 +54,9 @@ export default {
                 .then((response) => {
                     this.$store.state.transacao.status = "sucesso";
                     this.$store.state.transacao.mensagem =
-                        "Registro de modelo atualizado com sucesso!";
+                        "Registro de carro atualizado com sucesso!";
 
                     console.log("Atualizado", response);
-                    atualizarImagem.value = "";
                     this.carregarLista();
                 })
                 .catch((errors) => {
@@ -111,7 +110,7 @@ export default {
             this.carregarLista();
         },
         carregarLista() {
-            let url = this.urlBase + this.urlFiltro;
+            let url = this.urlBase + "?" + this.urlFiltro;
             axios
                 .get(url)
                 .then((response) => {
@@ -121,9 +120,7 @@ export default {
                     console.log(errors);
                 });
         },
-        carregarImagem(e) {
-            this.arquivoImagem = e.target.files;
-        },
+
         salvar() {
             let formData = new FormData();
             formData.append("modelo_id", this.modelo_id);
@@ -174,7 +171,7 @@ export default {
                                     titulo="ID"
                                     id="inputId"
                                     id-help="idHelp"
-                                    texto-ajuda="Opcional. Informe o ID da modelo"
+                                    texto-ajuda="Opcional. Informe o ID do carro"
                                 >
                                     <input
                                         type="number"
@@ -183,6 +180,23 @@ export default {
                                         aria-describedby="idHelp"
                                         placeholder="ID"
                                         v-model="busca.id"
+                                    />
+                                </InputComponent>
+                            </div>
+                            <div class="form-group col">
+                                <InputComponent
+                                    titulo="Placa"
+                                    id="inputPlaca"
+                                    id-help="placaHelp"
+                                    texto-ajuda="Opcional. Informe a placa do carro"
+                                >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="inputPlaca"
+                                        aria-describedby="placaHelp"
+                                        placeholder="Placa"
+                                        v-model="busca.placa"
                                     />
                                 </InputComponent>
                             </div>
@@ -490,7 +504,7 @@ export default {
     </Modal>
     <!--fim modal de remoção de modelo -->
     <!-- inicio modal de edição de modelo-->
-    <Modal id="modalCarroEditar" titulo="Editar Modelo">
+    <Modal id="modalCarroEditar" titulo="Editar Carro">
         <template v-slot:alertas>
             <Alert
                 tipo="success"

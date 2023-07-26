@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreLocacaoRequest;
-use App\Http\Requests\UpdateLocacaoRequest;
 use App\Models\Locacao;
 use App\Repositories\LocacaoRepository;
 use Illuminate\Http\Request;
@@ -22,6 +20,24 @@ class LocacaoController extends Controller
     {
         $locacaoRepository = new LocacaoRepository($this->locacao);
        
+        if ($request->has('atributos_cliente')) {
+            $atributos_cliente = 'cliente:id,' . $request->atributos_cliente;
+            $locacaoRepository->selectAtributosRegistrosRelacionados(
+                $atributos_cliente
+            );
+        } else {
+            $locacaoRepository->selectAtributosRegistrosRelacionados('cliente');
+        }
+        if ($request->has('atributos_carro')) {
+            $atributos_carro = 'carro:id,' . $request->atributos_carro;
+            $locacaoRepository->selectAtributosRegistrosRelacionados(
+                $atributos_carro
+            );
+        } else {
+            $locacaoRepository->selectAtributosRegistrosRelacionados('carro');
+        }
+
+
         if ($request->has('filtro')) {
             $locacaoRepository->filtro($request->filtro);
         }

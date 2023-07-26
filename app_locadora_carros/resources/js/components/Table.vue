@@ -1,4 +1,5 @@
 <script>
+import moment from "moment";
 export default {
     props: ["dados", "titulos", "atualizar", "visualizar", "remover"],
     methods: {
@@ -9,12 +10,7 @@ export default {
             this.$store.state.item = obj;
         },
         formataData(d) {
-            if (!d) return "";
-            d = d.split("T");
-            let data = d[0];
-            data = data.split("-");
-            data = data[2] + "/" + data[1] + "/" + data[0];
-            return data;
+            return moment(d).format("DD/MM/YYYY");
         },
     },
     computed: {
@@ -76,15 +72,21 @@ export default {
                                 v-if="
                                     titulos[chaveValor].tipo == 'texto' &&
                                     titulos[chaveValor].titulo !== 'Marca' &&
-                                    titulos[chaveValor].titulo !== 'Modelo'
+                                    titulos[chaveValor].titulo !== 'Modelo' &&
+                                    titulos[chaveValor].titulo !== 'Cliente' &&
+                                    titulos[chaveValor].titulo !== 'Carro'
                                 "
                             >
                                 {{ valor }}
                             </span>
+
                             <span
                                 v-else-if="titulos[chaveValor].tipo == 'texto'"
                             >
                                 {{ valor.nome }}
+                            </span>
+                            <span v-if="titulos[chaveValor].titulo == 'Carro'">
+                                {{ valor.placa }}
                             </span>
 
                             <span v-if="titulos[chaveValor].tipo == 'data'">{{

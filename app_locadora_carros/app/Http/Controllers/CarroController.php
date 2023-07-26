@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UpdateCarroRequest;
 use App\Models\Carro;
 use App\Repositories\CarroRepository;
 use Illuminate\Http\Request;
@@ -72,7 +71,7 @@ class CarroController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCarroRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $carro = $this->carro->find($id);
         if ($carro === null) {

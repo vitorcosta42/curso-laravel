@@ -98,7 +98,7 @@ export default {
         },
 
         carregarLista() {
-            let url = this.urlBase + this.urlFiltro;
+            let url = this.urlBase + "?" + this.urlFiltro;
             axios
                 .get(url)
                 .then((response) => {

@@ -36,3 +36,8 @@ Route::get('/clientes', function () {
 Route::get('/carros', function () {
     return view('app.carros');
 })->name('carros')->middleware('auth');
+
+
+Route::get('/locacoes', function () {
+    return view('app.locacoes');
+})->name('locacoes')->middleware('auth');
