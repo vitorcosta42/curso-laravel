@@ -1,11 +1,6 @@
 <script>
 import axios from "axios";
-import Paginate from "./Paginate.vue";
-
 export default {
-    components: {
-        Paginate,
-    },
     data() {
         return {
             urlBase: "http://localhost:8000/api/v1/marca",
@@ -16,9 +11,14 @@ export default {
             transacaoDetalhes: {},
             marcas: { data: [] },
             busca: { id: "", nome: "" },
+            currentPage: 1,
+            itemsPerPage: 5,
         };
     },
     methods: {
+        goToPage(pageNumber) {
+            this.currentPage = pageNumber;
+        },
         atualizar() {
             let formData = new FormData();
             formData.append("_method", "patch");
@@ -144,6 +144,16 @@ export default {
     mounted() {
         this.carregarLista();
     },
+    computed: {
+        totalPages() {
+            return Math.ceil(this.items.length / this.itemsPerPage);
+        },
+        paginatedList() {
+            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+            const endIndex = startIndex + this.itemsPerPage;
+            return this.items.slice(startIndex, endIndex);
+        },
+    },
 };
 </script>
 
@@ -204,6 +214,7 @@ export default {
                 <!-- fim card de busca -->
 
                 <!-- inicio card listagem -->
+
                 <Card titulo="Relação de Marcas">
                     <template v-slot:refresh>
                         <button
@@ -233,8 +244,14 @@ export default {
                             }"
                             :titulos="{
                                 id: { titulo: 'ID', tipo: 'texto' },
-                                nome: { titulo: 'Nome', tipo: 'texto' },
-                                imagem: { titulo: 'Imagem', tipo: 'imagem' },
+                                nome: {
+                                    titulo: 'Nome',
+                                    tipo: 'texto',
+                                },
+                                imagem: {
+                                    titulo: 'Imagem',
+                                    tipo: 'imagem',
+                                },
                                 created_at: {
                                     titulo: 'Data de Criação',
                                     tipo: 'data',
@@ -243,6 +260,7 @@ export default {
                         >
                         </Table>
                     </template>
+
                     <template v-slot:rodape>
                         <div class="ms-auto">
                             <button

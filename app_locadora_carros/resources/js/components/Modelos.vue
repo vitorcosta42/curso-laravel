@@ -1,10 +1,6 @@
 <script>
-import Paginate from "./Paginate.vue";
 
 export default {
-    components: {
-        Paginate,
-    },
     data() {
         return {
             urlBase: "http://localhost:8000/api/v1/modelo",

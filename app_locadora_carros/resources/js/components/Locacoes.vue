@@ -1,10 +1,6 @@
 <script>
-import Paginate from "./Paginate.vue";
 import moment from "moment";
 export default {
-    components: {
-        Paginate,
-    },
     data() {
         return {
             urlBase: "http://localhost:8000/api/v1/locacao",
@@ -49,20 +45,26 @@ export default {
         atualizar() {
             let formData = new FormData();
             formData.append("_method", "patch");
-            formData.append("carro_id", this.carro_id);
-            formData.append("cliente_id", this.cliente_id);
-            formData.append("data_inicio_periodo", this.data_inicio_periodo);
+            formData.append("carro_id", this.$store.state.item.carro.id);
+            formData.append("cliente_id", this.$store.state.item.cliente.id);
             formData.append(
-                "data_final_previsto_periodo",
-                this.data_final_previsto_periodo
+                "data_inicio_periodo",
+                this.$store.state.item.data_inicio_periodo
+            );
+            formData.append(
+                "data_inicio_periodo",
+                this.$store.state.item.data_final_previsto_periodo
             );
             formData.append(
                 "data_final_realizado_periodo",
-                this.data_final_realizado_periodo
+                this.$store.state.item.data_final_realizado_periodo
             );
-            formData.append("valor_diaria", this.valor_diaria);
-            formData.append("km_inicial", this.km_inicial);
-            formData.append("km_final", this.km_final);
+            formData.append(
+                "valor_diaria",
+                this.$store.state.item.valor_diaria
+            );
+            formData.append("km_inicial", this.$store.state.item.km_inicial);
+            formData.append("km_final", this.$store.state.item.km_final);
 
             let url = this.urlBase + "/" + this.$store.state.item.id;
 
