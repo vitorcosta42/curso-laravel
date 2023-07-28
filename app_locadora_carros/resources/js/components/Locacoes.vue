@@ -4,11 +4,18 @@ export default {
     data() {
         return {
             urlBase: "http://localhost:8000/api/v1/locacao",
+            urlPaginacao: "",
             urlFiltro: "",
             carro_id: "",
             cliente_id: "",
-            carros: [],
-            clientes: [],
+            data_inicio_periodo: "",
+            data_final_previsto_periodo: "",
+            data_final_realizado_periodo: "",
+            valor_diaria: "",
+            km_inicial: "",
+            km_final: "",
+            carros: { data: [] },
+            clientes: { data: [] },
             transacaoStatus: "",
             transacaoDetalhes: {},
             locacoes: { data: [] },
@@ -20,7 +27,7 @@ export default {
             return moment(d).format("DD/MM/YYYY");
         },
         buscarCarros() {
-            let urlCarros = "http://localhost:8000/api/v1/carro";
+            let urlCarros = "http://localhost:8000/api/v1/carro?buscar";
             axios
                 .get(urlCarros)
                 .then((response) => {
@@ -32,7 +39,7 @@ export default {
         },
 
         buscarClientes() {
-            let urlClientes = "http://localhost:8000/api/v1/cliente";
+            let urlClientes = "http://localhost:8000/api/v1/cliente?buscar";
             axios
                 .get(urlClientes)
                 .then((response) => {
@@ -127,19 +134,27 @@ export default {
                     filtro += chave + ":like:" + this.busca[chave];
                 }
             }
+
             if (filtro != "") {
+                this.urlPaginacao = "page=1";
                 this.urlFiltro = "&filtro=" + filtro;
             } else {
                 this.urlFiltro = "";
             }
             this.carregarLista();
         },
+        paginacao(l) {
+            if (l.url) {
+                this.urlPaginacao = l.url.split("?")[1];
+                this.carregarLista();
+            }
+        },
         carregarLista() {
-            let url = this.urlBase + "?" + this.urlFiltro;
+            let url = this.urlBase + "?" + this.urlPaginacao + this.urlFiltro;
             axios
                 .get(url)
                 .then((response) => {
-                    this.locacoes = response;
+                    this.locacoes = response.data;
                 })
                 .catch((errors) => {
                     console.log(errors);
@@ -323,6 +338,18 @@ export default {
                         </Table>
                     </template>
                     <template v-slot:rodape>
+                        <Paginate>
+                            <li
+                                v-for="(l, key) in locacoes.links"
+                                :key="key"
+                                :class="
+                                    l.active ? 'page-item active' : 'page-item'
+                                "
+                                @click="paginacao(l)"
+                            >
+                                <a class="page-link" v-html="l.label"></a>
+                            </li>
+                        </Paginate>
                         <div class="ms-auto">
                             <button
                                 type="button"

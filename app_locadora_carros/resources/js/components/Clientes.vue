@@ -1,14 +1,11 @@
 <script>
 import axios from "axios";
-import Paginate from "./Paginate.vue";
 
 export default {
-    components: {
-        Paginate,
-    },
     data() {
         return {
             urlBase: "http://localhost:8000/api/v1/cliente",
+            urlPaginacao:"",
             urlFiltro: "",
             nomeCliente: "",
             arquivoImagem: [],
@@ -90,27 +87,29 @@ export default {
                 }
             }
             if (filtro != "") {
+                this.urlPaginacao = "page=1";
                 this.urlFiltro = "&filtro=" + filtro;
             } else {
                 this.urlFiltro = "";
             }
             this.carregarLista();
         },
-
+        paginacao(l) {
+            if (l.url) {
+                this.urlPaginacao = l.url.split("?")[1];
+                this.carregarLista();
+            }
+        },
         carregarLista() {
-            let url = this.urlBase + this.urlFiltro;
+            let url = this.urlBase + "?" + this.urlPaginacao + this.urlFiltro;
             axios
                 .get(url)
                 .then((response) => {
-                    this.clientes = response;
+                    this.clientes = response.data;
                 })
                 .catch((errors) => {
                     console.log(errors);
                 });
-        },
-
-        carregarImagem(e) {
-            this.arquivoImagem = e.target.files;
         },
         salvar() {
             let formData = new FormData();
@@ -239,6 +238,19 @@ export default {
                         </Table>
                     </template>
                     <template v-slot:rodape>
+                        <Paginate>
+                            <li
+                                v-for="(l, key) in clientes.links"
+                                :key="key"
+                                :class="
+                                    l.active ? 'page-item active' : 'page-item'
+                                "
+                                @click="paginacao(l)"
+                            >
+                                <a class="page-link" v-html="l.label"></a>
+                            </li>
+                        </Paginate>
+
                         <div class="ms-auto">
                             <button
                                 type="button"

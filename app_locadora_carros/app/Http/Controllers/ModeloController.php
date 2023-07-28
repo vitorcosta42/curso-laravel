@@ -37,7 +37,12 @@ class ModeloController extends Controller
                 $request->atributos 
             );
         }
-        return response()->json($modeloRepository->getResultado(), 200);
+        if ($request->has('buscar')) {
+            return response()->json($modeloRepository->getResultado(), 200);
+    
+            }
+            return response()->json($modeloRepository->getResultadoPaginado(5), 200);
+    
     }
 
     public function store(Request $request)

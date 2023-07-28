@@ -1,15 +1,15 @@
 <script>
-
 export default {
     data() {
         return {
             urlBase: "http://localhost:8000/api/v1/carro",
+            urlPaginacao: "",
             urlFiltro: "",
             modelo_id: "",
             disponivel: "",
             placa: "",
             km: "",
-            modelos: [],
+            modelos: { data: [] },
             transacaoStatus: "",
             transacaoDetalhes: {},
             carros: { data: [] },
@@ -18,7 +18,7 @@ export default {
     },
     methods: {
         buscarModelos() {
-            let urlModelos = "http://localhost:8000/api/v1/modelo";
+            let urlModelos = "http://localhost:8000/api/v1/modelo?buscar";
             axios
                 .get(urlModelos)
                 .then((response) => {
@@ -99,18 +99,25 @@ export default {
                 }
             }
             if (filtro != "") {
+                this.urlPaginacao = "page=1";
                 this.urlFiltro = "&filtro=" + filtro;
             } else {
                 this.urlFiltro = "";
             }
             this.carregarLista();
         },
+        paginacao(l) {
+            if (l.url) {
+                this.urlPaginacao = l.url.split("?")[1];
+                this.carregarLista();
+            }
+        },
         carregarLista() {
-            let url = this.urlBase + "?" + this.urlFiltro;
+            let url = this.urlBase + "?" + this.urlPaginacao + this.urlFiltro;
             axios
                 .get(url)
                 .then((response) => {
-                    this.carros = response;
+                    this.carros = response.data;
                 })
                 .catch((errors) => {
                     console.log(errors);
@@ -256,6 +263,18 @@ export default {
                         </Table>
                     </template>
                     <template v-slot:rodape>
+                        <Paginate>
+                            <li
+                                v-for="(l, key) in carros.links"
+                                :key="key"
+                                :class="
+                                    l.active ? 'page-item active' : 'page-item'
+                                "
+                                @click="paginacao(l)"
+                            >
+                                <a class="page-link" v-html="l.label"></a>
+                            </li>
+                        </Paginate>
                         <div class="ms-auto">
                             <button
                                 type="button"
@@ -266,7 +285,6 @@ export default {
                                 Adicionar
                             </button>
                         </div>
-
                     </template>
                 </Card>
             </div>

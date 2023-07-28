@@ -30,7 +30,12 @@ class ClienteController extends Controller
                 $request->atributos
             );
         }
-        return response()->json($clienteRepository->getResultado(), 200);
+        if ($request->has('buscar')) {
+            return response()->json($clienteRepository->getResultado(), 200);
+    
+            }
+            return response()->json($clienteRepository->getResultadoPaginado(5), 200);
+    
     }
 
 

@@ -30,6 +30,7 @@ import Table from "./components/Table.vue";
 import Card from "./components/Card.vue";
 import Modal from "./components/Modal.vue";
 import Alert from "./components/Alert.vue";
+import Paginate from "./components/Paginate.vue";
 
 app.component("Home", HomeComponent);
 app.component("Clientes", ClientesComponent);
@@ -42,6 +43,7 @@ app.component("Login", LoginComponent);
 app.component("Alert", Alert);
 app.component("Card", Card);
 app.component("InputComponent", InputComponent);
+app.component("Paginate", Paginate);
 app.component("Table", Table);
 app.component("Modal", Modal);
 app.mount("#app");

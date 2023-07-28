@@ -12,14 +12,15 @@ class LocacaoController extends Controller
     /**
      * Display a listing of the resource.
      */
-     public function __construct(Locacao $locacao) {
+    public function __construct(Locacao $locacao)
+    {
         $this->locacao = $locacao;
     }
 
     public function index(Request $request)
     {
         $locacaoRepository = new LocacaoRepository($this->locacao);
-       
+
         if ($request->has('atributos_cliente')) {
             $atributos_cliente = 'cliente:id,' . $request->atributos_cliente;
             $locacaoRepository->selectAtributosRegistrosRelacionados(
@@ -47,7 +48,10 @@ class LocacaoController extends Controller
                 $request->atributos
             );
         }
-        return response()->json($locacaoRepository->getResultado(), 200);
+        if ($request->has('buscar')) {
+            return response()->json($locacaoRepository->getResultado(), 200);
+        }
+        return response()->json($locacaoRepository->getResultadoPaginado(5), 200);
     }
 
 
@@ -55,27 +59,27 @@ class LocacaoController extends Controller
      * Store a newly created resource in storage.
      */
 
-        public function store(Request $request)
-        {
-            $request->validate(
-                $this->locacao->rules()
-            );
-            $locacao = $this->locacao->create([
-                'cliente_id' => $request->cliente_id,
-                'carro_id' => $request->carro_id,
-                'data_inicio_periodo' => $request->data_inicio_periodo,
-                'data_final_previsto_periodo' => $request->data_final_previsto_periodo,
-                'data_final_realizado_periodo' => $request->data_final_realizado_periodo,
-                'valor_diaria' => $request->valor_diaria,      
-                'km_inicial' => $request->km_inicial,   
-                'km_final' => $request->km_final,   
-            ]);
-            return response()->json($locacao, 201);
-        }
+    public function store(Request $request)
+    {
+        $request->validate(
+            $this->locacao->rules()
+        );
+        $locacao = $this->locacao->create([
+            'cliente_id' => $request->cliente_id,
+            'carro_id' => $request->carro_id,
+            'data_inicio_periodo' => $request->data_inicio_periodo,
+            'data_final_previsto_periodo' => $request->data_final_previsto_periodo,
+            'data_final_realizado_periodo' => $request->data_final_realizado_periodo,
+            'valor_diaria' => $request->valor_diaria,
+            'km_inicial' => $request->km_inicial,
+            'km_final' => $request->km_final,
+        ]);
+        return response()->json($locacao, 201);
+    }
 
     public function show($id)
     {
-       $locacao = $this->locacao->find($id);
+        $locacao = $this->locacao->find($id);
         if ($locacao === null) {
             return response()->json(
                 ['erro' => 'Recurso pesquisado não existe'],
@@ -115,7 +119,7 @@ class LocacaoController extends Controller
         return response()->json($locacao, 200);
     }
 
-  
+
     public function destroy($id)
     {
         $locacao = $this->locacao->find($id);
@@ -129,5 +133,5 @@ class LocacaoController extends Controller
 
         $locacao->delete();
         return response()->json(['msg' => 'A locação foi removida com sucesso'], 200);
-    }  
+    }
 }

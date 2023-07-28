@@ -4,6 +4,7 @@ export default {
     data() {
         return {
             urlBase: "http://localhost:8000/api/v1/marca",
+            urlPaginacao: "",
             urlFiltro: "",
             nomeMarca: "",
             arquivoImagem: [],
@@ -15,9 +16,16 @@ export default {
             itemsPerPage: 5,
         };
     },
+    computed: {
+        totalPages() {
+            // return Math.ceil(this.marcas?.length / this.itemsPerPage);
+        },
+    },
+
     methods: {
         goToPage(pageNumber) {
             this.currentPage = pageNumber;
+            this.carregarLista();
         },
         atualizar() {
             let formData = new FormData();
@@ -90,19 +98,26 @@ export default {
                 }
             }
             if (filtro != "") {
+                this.urlPaginacao = "page=1";
                 this.urlFiltro = "&filtro=" + filtro;
             } else {
                 this.urlFiltro = "";
             }
             this.carregarLista();
         },
+        paginacao(l) {
+            if (l.url) {
+                this.urlPaginacao = l.url.split("?")[1];
+                this.carregarLista();
+            }
+        },
 
         carregarLista() {
-            let url = this.urlBase + "?" + this.urlFiltro;
+            let url = this.urlBase + "?" + this.urlPaginacao + this.urlFiltro;
             axios
                 .get(url)
                 .then((response) => {
-                    this.marcas = response;
+                    this.marcas = response.data;
                 })
                 .catch((errors) => {
                     console.log(errors);
@@ -143,16 +158,6 @@ export default {
 
     mounted() {
         this.carregarLista();
-    },
-    computed: {
-        totalPages() {
-            return Math.ceil(this.items.length / this.itemsPerPage);
-        },
-        paginatedList() {
-            const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-            const endIndex = startIndex + this.itemsPerPage;
-            return this.items.slice(startIndex, endIndex);
-        },
     },
 };
 </script>
@@ -262,6 +267,18 @@ export default {
                     </template>
 
                     <template v-slot:rodape>
+                        <Paginate>
+                            <li
+                                v-for="(l, key) in marcas.links"
+                                :key="key"
+                                :class="
+                                    l.active ? 'page-item active' : 'page-item'
+                                "
+                                @click="paginacao(l)"
+                            >
+                                <a class="page-link" v-html="l.label"></a>
+                            </li>
+                        </Paginate>
                         <div class="ms-auto">
                             <button
                                 type="button"

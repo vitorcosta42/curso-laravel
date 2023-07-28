@@ -19,7 +19,7 @@ class MarcaController extends Controller
     public function index(Request $request)
     {
         $marcaRepository = new MarcaRepository($this->marca);
-        if ($request->has('atributos_modelos')) { 
+        if ($request->has('atributos_modelos')) {
             $atributos_modelos = 'modelos:id,' . $request->atributos_modelos;
             $marcaRepository->selectAtributosRegistrosRelacionados(
                 $atributos_modelos
@@ -36,7 +36,13 @@ class MarcaController extends Controller
                 $request->atributos
             );
         }
+    
+        if ($request->has('buscar')) {
         return response()->json($marcaRepository->getResultado(), 200);
+
+        }
+        return response()->json($marcaRepository->getResultadoPaginado(5), 200);
+
     }
 
     public function store(Request $request)
@@ -99,11 +105,10 @@ class MarcaController extends Controller
 
         if ($request->file('imagem')) {
             Storage::disk('public')->delete($marca->imagem);
-      
+
             $imagem = $request->file('imagem');
             $imagem_urn = $imagem->store('imagens', 'public');
             $marca->imagem = $imagem_urn;
-    
         }
 
         $marca->save();
